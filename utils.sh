@@ -58,7 +58,7 @@ function utils::in_array() {
 #
 # Usage:
 #
-#  __wget http://mirrors.aliyun.com/repo/Centos-7.repo > /etc/yum.repos.d/CentOS-Base.repo
+#   utils::wget http://mirrors.aliyun.com/repo/Centos-7.repo > /etc/yum.repos.d/CentOS-Base.repo
 #
 # Notes:
 #
