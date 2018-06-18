@@ -1,36 +1,23 @@
 #!/bin/bash
 
 #
-# Examples: utils::retry_with_times 3 git pull
+# Examples: utils::retry 1 3 git pull
 #
-function utils::retry_with_times() {
-    local n=${1:-0}
+function utils::retry() {
+    local interval=${1:-0}
+    local retries=${2:-0}
     local code=0
-    until [ "$n" -le 0 ]; do
-        "${@:2}"
+    until [ "$retries" -le 0 ]; do
+        eval "${@:3}"
         code=$?
         if [ $code -eq 0 ]; then
-            return 0
+            break
+        else
+            sleep "$interval"
         fi
-        n=$((n-1))
+        retries=$((retries-1))
     done
     return $code
-}
-
-#
-# Examples: utils::retry_with_sleep 3 git pull
-#
-function utils::retry_with_sleep() {
-    local n=${1:-0}
-    shift
-    for i in $(seq 1 "$n"); do
-        if "$@"; then
-            return 0
-        else
-            sleep "$i"
-        fi
-    done
-    "$@"
 }
 
 # Check item is in array or not.
