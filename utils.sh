@@ -113,17 +113,19 @@ function utils::wget() {
                 else
                     printf "invalid http response from '%s'" "$URL"
                     exec 3>&-
-                    return 1
+                    return 2
                 fi
             fi
         elif [ $state -eq 1 ]; then
             if [[ "$line" == $'\r' ]]; then
 				# found "\r\n"
 				state=2
-            fi  
-        elif [ $state -eq 2 ]; then
-			# redirect body to stdout
-			echo "$line"
+                # redirect body to stdout
+                # bash cannot handle NUL byte in string, we should not echo line by line
+                # alternative solution: https://unix.stackexchange.com/a/421403/206361
+                /bin/cat -
+                break
+            fi
         fi
     done <&3
     exec 3>&-

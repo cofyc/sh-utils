@@ -39,12 +39,28 @@ else
 fi
 
 # utils::wget
-tmpfile=$(mktemp)
-# shellcheck disable=SC2064
-trap "test -f $tmpfile && rm $tmpfile || true" EXIT
-utils::wget http://example.org/ > "$tmpfile"
-if grep "Example Domain" "$tmpfile" >/dev/null; then
-    pass
+if utils::wget http://example.org/ | grep "Example Domain" >/dev/null; then
+    pass "wget text"
 else
-    fail
+    fail "wget text"
+fi
+
+function test_wget_binary() {
+    (
+        # run in subshell to avoid overriding trap handler
+        python -m SimpleHTTPServer >/dev/null 2>&1 &
+        local pid=$!
+        dd if=/dev/urandom of=test.bin bs=10M count=1 &>/dev/null
+        trap 'kill $pid && wait 2>/dev/null && rm test.bin' EXIT
+        local expected got
+        expected=$(md5sum test.bin | cut -d ' ' -f 1)
+        got=$(utils::wget http://localhost:8000/test.bin | md5sum - | cut -d ' ' -f 1)
+        [[ "$got" != "" ]] && [[ "$got" == "$expected" ]]
+    )
+}
+
+if test_wget_binary; then
+    pass "wget binary"
+else
+    fail "wget binary"
 fi
