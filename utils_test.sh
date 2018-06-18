@@ -11,18 +11,11 @@ set +o nounset
 
 plan_no_plan
 
-# utils::retry_with_times
-utils::retry_with_times 3 ls / &>/dev/null
+# utils::retry
+utils::retry 1 3 ls / &>/dev/null
 okx [ $? -eq 0 ]
 
-utils::retry_with_times 3 ls /does_not_exist &>/dev/null
-okx [ $? -ne 0 ]
-
-## utils::retry_with_sleep
-utils::retry_with_sleep 3 ls / &>/dev/null
-okx [ $? -eq 0 ]
-
-utils::retry_with_sleep 1 ls /does_not_exist &>/dev/null
+utils::retry 1 3 ls /does_not_exist &>/dev/null
 okx [ $? -ne 0 ]
 
 # utils::in_array
@@ -50,6 +43,7 @@ function test_wget_binary() {
         # run in subshell to avoid overriding trap handler
         python -m SimpleHTTPServer >/dev/null 2>&1 &
         local pid=$!
+        utils::retry 1 3 nc -z -v localhost 8000
         dd if=/dev/urandom of=test.bin bs=10M count=1 &>/dev/null
         trap 'kill $pid && wait 2>/dev/null && rm test.bin' EXIT
         local expected got
