@@ -18,19 +18,6 @@ okx [ $? -eq 0 ]
 utils::retry 1 3 ls /does_not_exist &>/dev/null
 okx [ $? -ne 0 ]
 
-# utils::in_array
-ARRAY=(apple orange banana 'good fruit')
-if utils::in_array apple "${ARRAY[@]}"; then
-    pass
-else
-    fail
-fi
-if ! utils::in_array pineapple "${ARRAY[@]}"; then
-    pass
-else
-    fail
-fi
-
 # utils::wget
 if utils::wget http://example.org/ | grep "Example Domain" >/dev/null; then
     pass "wget text"
@@ -58,3 +45,13 @@ if test_wget_binary; then
 else
     fail "wget binary"
 fi
+
+# in_array
+ARRAY=(apple orange banana 'good fruit')
+okx utils::in_array apple "${ARRAY[@]}"
+okx utils::in_array 'good fruit' "${ARRAY[@]}"
+okx ! utils::in_array pineapple "${ARRAY[@]}"
+
+# join_by
+ARRAY=(a b c aa bb cc)
+is "a,b,c,aa,bb,cc" $(utils::join_by , "${ARRAY[@]}") "join_by"

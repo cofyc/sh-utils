@@ -1,4 +1,9 @@
 #!/bin/bash 
+#
+# This is modified from
+# https://github.com/goozbach/bash-tap-functions/blob/master/tap-functions with
+# some modifications.
+#
 
 
 _version='1.02'
@@ -228,7 +233,7 @@ okx(){
 
 	local line=
 	diag "Output of '$command':"
-	$command | while read line ; do
+	eval $command | while read line ; do
 		diag "$line"
 	done
 	ok ${PIPESTATUS[0]} "$command"

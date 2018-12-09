@@ -33,6 +33,15 @@ function utils::in_array() {
     return 1
 }
 
+# join_by uses first argument as separate to concatenate the elements to create
+# a single string.
+# See https://stackoverflow.com/a/17841619/288089.
+function utils::join_by() {
+    local IFS="$1"
+    shift
+    echo "$*";
+}
+
 #
 # wget alternative implementation
 #
