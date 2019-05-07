@@ -126,3 +126,7 @@ function utils::wget() {
     done <&3
     exec 3>&-
 }
+
+function utils::is_root() {
+    [ "$(id -u)" -eq 0 ]
+}
