@@ -130,3 +130,13 @@ function utils::wget() {
 function utils::is_root() {
     [ "$(id -u)" -eq 0 ]
 }
+
+# utils::version_le "$v1" "$v2" checks whether "v1" is lesser or equal to "v2"
+function utils::version_le() {
+    [ "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" = "$1" ]
+}
+
+# utils::version_ge "$v1" "$v2" checks whether "v1" is greater or equal to "v2"
+function utils::version_ge() {
+    [ "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" = "$2" ]
+}
